@@ -58,7 +58,6 @@ public class BlogRepositoryTests {
         blogPostRepository.deleteAll();  // Clean up after each test to ensure isolation
     }
 
-
     /**
      * Dynamically provide MongoDB connection properties from the running container
      */

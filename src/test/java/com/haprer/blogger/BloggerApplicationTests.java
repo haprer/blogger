@@ -8,10 +8,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.util.List;
 
@@ -34,6 +38,7 @@ class BloggerApplicationTests {
 	private MockMvc mockMvc;
 	@Autowired
 	private BlogService blogService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 
 	//default values for testing a new blog post
@@ -47,24 +52,55 @@ class BloggerApplicationTests {
 		blogService.deleteAll();
 	}
 
+	/**
+	 * Dynamically provide MongoDB connection properties from the running container
+	 */
+	@DynamicPropertySource
+	static void setMongoDbProperties(DynamicPropertyRegistry registry) {
+		// Dynamically set MongoDB connection string provided by Testcontainers
+		registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+	}
+
+	//------------------------------------tests------------------------------------------------
+
 	@Test
 	void contextLoads() {}
 
+
+
+
 	@Test
 	void findBlogByTitleAndAuthor() throws Exception {
-
-
 
 		BlogPost post = new BlogPost(title, author, content, tags);
 		blogService.save(post);
 
 
 		mockMvc.perform(get("/find")
-						.param("title", "Test Title")
-						.param("author", "Test Author")
+						.param("title", title)
+						.param("author", author)
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isFound())  // Expect HTTP 302 FOUND status
-				.andExpect(content().json("{'title':'Test Title','author':'Test Author','content':'Test Content'}"));
+				.andExpect(content().json(objectMapper.writeValueAsString(post)));
+
+	}
+
+	@Test
+	void cannotFindIncorrectTitleAndAuthor() throws Exception {
+		BlogPost post = new BlogPost(title, author, content, tags);
+		blogService.save(post);
+
+
+		mockMvc.perform(get("/find")
+						.param("title", "Incorrect Title")
+						.param("author", "Incorrect Author")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());  // Expect HTTP NOT FOUND status
+	}
+
+
+	@Test
+	void findRangeByTime() {
 
 	}
 

@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +21,24 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@Testcontainers
 @ActiveProfiles("test") //configure spring to use database defined in test-application.properties
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)  // Reset the context after each test
 public class BlogServiceTests {
 
+
+    //this is the docker container that will run the test
+    @Container
+    private static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest");
+
+    /**
+     * Dynamically provide MongoDB connection properties from the running container
+     */
+    @DynamicPropertySource
+    static void setMongoDbProperties(DynamicPropertyRegistry registry) {
+        // Dynamically set MongoDB connection string provided by Testcontainers
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    }
 
     @Autowired
     BlogService blogService;
@@ -32,6 +51,11 @@ public class BlogServiceTests {
     public void afterEach() {
         blogService.deleteAll();
     }
+
+
+
+
+    //-------------------------------------tests----------------------------------------
 
     @Test
     public void createReadUpdateDestroy() {
