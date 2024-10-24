@@ -1,7 +1,7 @@
 package com.haprer.blogger;
 
 
-import com.haprer.blogger.controllers.data.BlogPost;
+import com.haprer.blogger.data.BlogPost;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

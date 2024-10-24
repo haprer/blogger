@@ -1,7 +1,7 @@
 package com.haprer.blogger;
 
 
-import com.haprer.blogger.controllers.data.BlogPost;
+import com.haprer.blogger.data.BlogPost;
 import lombok.experimental.Delegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
