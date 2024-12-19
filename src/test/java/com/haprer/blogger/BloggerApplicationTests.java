@@ -1,7 +1,8 @@
 package com.haprer.blogger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.haprer.blogger.configurations.JacksonConfig;
 import com.haprer.blogger.data.BlogPost;
+import com.haprer.blogger.services.BlogService;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,12 +36,11 @@ import static org.hamcrest.Matchers.not;
 
 
 /**
- * Written with the help of ChatGPT
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-@Import(JacksonConfiguration.class)  // Import your configuration if necessary
+@Import(JacksonConfig.class)  // Import your configuration if necessary
 @ActiveProfiles("test")    //set spring to use test database - in test-application.properties
 class BloggerApplicationTests {
 

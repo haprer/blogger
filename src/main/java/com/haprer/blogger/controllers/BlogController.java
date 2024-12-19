@@ -1,6 +1,6 @@
 package com.haprer.blogger.controllers;
 
-import com.haprer.blogger.BlogService;
+import com.haprer.blogger.services.BlogService;
 import com.haprer.blogger.data.BlogPost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +41,7 @@ public class BlogController {
         return blog.<ResponseEntity<Object>>map(blogPost -> new ResponseEntity<>(blogPost, HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>("Blog Not Found", HttpStatus.NOT_FOUND));
     }
+
+
 
 }

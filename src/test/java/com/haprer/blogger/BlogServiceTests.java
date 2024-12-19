@@ -1,6 +1,7 @@
 package com.haprer.blogger;
 
 import com.haprer.blogger.data.BlogPost;
+import com.haprer.blogger.services.BlogService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +53,8 @@ public class BlogServiceTests {
     public void afterEach() {
         blogService.deleteAll();
     }
+
+
 
 
 
@@ -103,5 +107,36 @@ public class BlogServiceTests {
         Assertions.assertThat(blogService.count()).isEqualTo(0);
         Optional<BlogPost> deletedPost = blogService.findByTitleAndAuthor(title, author);
         Assertions.assertThat(deletedPost).isEmpty();
+    }
+
+    @Test
+    void getPopularTags() {
+        List<BlogPost> posts = new ArrayList<>();
+
+        List<String> tags = new ArrayList<>();
+        // Each tag is going to appear on the posts less than or equal to it.
+        for (int i = 0; i < 10; i++) {
+            tags.add("" + i);  // Adding tag i to the list
+            posts.add(new BlogPost("title" + i, "author" + i, "content" + i, new ArrayList<>(tags)));
+        }
+
+        // Save all the blog posts
+        blogService.saveAll(posts);
+
+        // Verify that posts are saved by querying the repository
+        List<BlogPost> savedPosts = blogService.findAll();
+        System.out.println("Saved Posts: " + savedPosts.size());  // Debugging statement to verify data is saved
+        Assertions.assertThat(savedPosts.size()).isEqualTo(10);
+
+
+        // Now call the method to get popular tags
+        List<TagCount> tagCounts = blogService.findMostPopularTags();
+
+        // Add some debugging to verify the result
+        System.out.println("Popular Tags: " + tagCounts);  // Debugging statement to check the popular tags
+
+        // Assertions
+        Assertions.assertThat(tagCounts.size()).isEqualTo(10);  // There should be 10 popular tags
+        Assertions.assertThat(tagCounts.get(0).getTag()).isEqualTo("0");  // The most popular tag should be "0"
     }
 }

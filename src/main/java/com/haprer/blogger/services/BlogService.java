@@ -1,12 +1,15 @@
-package com.haprer.blogger;
+package com.haprer.blogger.services;
 
 
+import com.haprer.blogger.BlogPostRepository;
+import com.haprer.blogger.TagCount;
 import com.haprer.blogger.data.BlogPost;
 import lombok.experimental.Delegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,5 +46,10 @@ public class BlogService {
         b.setTitle(newTitle);
         blogPostRepository.save(b);
         return true;
+    }
+
+
+    public List<TagCount> getMostPopularTags() {
+        return blogPostRepository.findMostPopularTags();
     }
 }

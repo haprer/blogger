@@ -1,6 +1,7 @@
 package com.haprer.blogger;
 
 import com.haprer.blogger.data.BlogPost;
+import com.haprer.blogger.services.BlogService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
