@@ -137,6 +137,8 @@ public class BlogServiceTests {
 
         // Assertions
         Assertions.assertThat(tagCounts.size()).isEqualTo(10);  // There should be 10 popular tags
-        Assertions.assertThat(tagCounts.get(0).getTag()).isEqualTo("0");  // The most popular tag should be "0"
+        Assertions.assertThat(tagCounts.getFirst().getTag()).isEqualTo("0");  // The most popular tag should be "0"
     }
+
+
 }

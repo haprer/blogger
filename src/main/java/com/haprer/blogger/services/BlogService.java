@@ -48,8 +48,4 @@ public class BlogService {
         return true;
     }
 
-
-    public List<TagCount> getMostPopularTags() {
-        return blogPostRepository.findMostPopularTags();
-    }
 }
