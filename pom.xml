@@ -12,7 +12,7 @@
 	<artifactId>blogger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>blogger</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Backend for Harper's blog website</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -79,6 +79,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		<!--		This is for generating typescript types for the front end-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.7.0</version>
 		</dependency>
 
 
