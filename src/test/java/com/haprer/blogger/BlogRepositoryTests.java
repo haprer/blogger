@@ -88,6 +88,7 @@ public class BlogRepositoryTests {
         Assertions.assertThat(blogPostRepository.count()).isEqualTo(1);
     }
 
+
     @Test
     public void createReadAndDestroyBlogPost() {
 
