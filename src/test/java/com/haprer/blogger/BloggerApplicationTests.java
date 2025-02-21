@@ -203,7 +203,7 @@ class BloggerApplicationTests {
 		//perform get for first page ---> this does not specify a page because first page is default
 		MvcResult res =  mockMvc.perform(get("/blogposts")
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andReturn();  // Expect HTTP NOT FOUND status
+				.andExpect(status().isOk()).andReturn();
 
 		//extract the result (BlogPost[]) from the response
 		JsonNode jsonNode = objectMapper.readTree(res.getResponse().getContentAsString());

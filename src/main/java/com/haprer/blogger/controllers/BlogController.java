@@ -54,7 +54,7 @@ public class BlogController {
      * @return
      */
     @GetMapping("/blogposts")
-    public Page<BlogPost> getUsers( @RequestParam(defaultValue = "0") int page,
+    public Page<BlogPost> getBlogPosts( @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);

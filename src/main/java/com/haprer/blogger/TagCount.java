@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class TagCount {
 
 
-    @Field("_id")
+    @Field("_id")       //"_id" is assigned the tag value in the unwind process in blogpostrepository.java
     private String tag;
     private long count;
 }

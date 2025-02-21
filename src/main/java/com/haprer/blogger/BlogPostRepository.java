@@ -18,6 +18,8 @@ public interface BlogPostRepository extends MongoRepository<BlogPost, String> {
 
     void deleteByTitleAndAuthor(String title, String author);
 
+
+    //TODO this needs tests
     @Aggregation(pipeline = {
             "{ $unwind: '$tags' }",
             "{ $group: { _id: '$tags', count: { $sum: 1 } } }",
