@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +28,7 @@ public class BlogController {
      */
     @PostMapping("/save")
     public ResponseEntity<BlogPost> save (@RequestBody BlogPost blogPost) {
+        blogPost.setTimestamp(Instant.now());
         BlogPost createdPost = blogService.save(blogPost);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }

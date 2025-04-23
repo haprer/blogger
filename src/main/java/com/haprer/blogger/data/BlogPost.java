@@ -32,9 +32,11 @@ public class BlogPost {
     @Setter private String content;
 
 
-     private Instant timestamp;
+    //this property is always set on the server side
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Setter private Instant timestamp;
 
-
+    private BlogPost(){}  //just in case for serialization rules
     public BlogPost(String title, String author, String content, List<String> tags, Instant timestamp) {
         this.title = title;
         this.author = author;
@@ -42,15 +44,12 @@ public class BlogPost {
         this.tags = tags;
         this.timestamp = Instant.now(); // Always set to current time
     }
-    private BlogPost() {
-        this.timestamp = Instant.now();
-    }
+
+    /**
+     * Constructor with no timestamp - set to now
+     */
     public BlogPost(String title, String author, String content, List<String> tags) {
-        this.title = title;
-        this.author = author;
-        this.content = content;
-        this.tags = tags;
-        this.timestamp = null; // Always set to current time
+        this(title, author, content, tags, Instant.now());
     }
 
 }
