@@ -175,16 +175,14 @@ class BloggerApplicationTests {
 				.andExpect(status().isCreated())  // Expect HTTP 201 CREATED status
 				.andExpect(jsonPath("$.timestamp").exists())
 				.andExpect(result -> {
-					BigDecimal returnedTimestampBigDecimal = JsonPath.read(result.getResponse().getContentAsString(), "$.timestamp");
-					Instant returnedTimestamp = Instant.ofEpochMilli(returnedTimestampBigDecimal.longValue());
-
-					//TODO This test passes when it should fail I think because of rounding errors
+					String returnedTimeStamp = JsonPath.read(result.getResponse().getContentAsString(), "$.timestamp");
+					//Instant returnedTimestamp = Instant.ofEpochMilli(returnedTimestampBigDecimal.longValue());
 
 					// Get the original timestamp from testPost
 					Instant originalTimestamp = testPost.getTimestamp();
 
 					// Assert that the timestamps are different
-					assertNotEquals(originalTimestamp, returnedTimestamp);
+					assertNotEquals(originalTimestamp.toString(), returnedTimeStamp);
 				});
 
 	}
