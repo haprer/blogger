@@ -2,6 +2,7 @@ package com.haprer.blogger;
 
 
 import com.haprer.blogger.data.BlogPost;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -19,13 +20,14 @@ public interface BlogPostRepository extends MongoRepository<BlogPost, String> {
     void deleteByTitleAndAuthor(String title, String author);
 
 
-    //TODO this needs tests
+    /**
+     * This is mongoDB query code for getting the tags sorted by number of appearances;
+     */
     @Aggregation(pipeline = {
             "{ $unwind: '$tags' }",
             "{ $group: { _id: '$tags', count: { $sum: 1 } } }",
             "{ $sort: { count: -1 } }"
     })
     List<TagCount> findMostPopularTags();
-
 
 }

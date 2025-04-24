@@ -7,6 +7,7 @@ import com.haprer.blogger.services.BlogService;
 import com.jayway.jsonpath.JsonPath;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,6 +31,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -240,6 +242,69 @@ class BloggerApplicationTests {
 			//todo check other stats
 		}
 
+	}
+
+
+	/**
+	 * Find the tags:
+	 * post appears 20 times
+	 * odd appears 10 times
+	 * even appears 10 times
+	 * once appears 1 times
+	 *
+	 * the posts should be in order by number of appearances
+	 * @throws Exception
+	 */
+	@Test
+	void findFourMostPopularTags() throws Exception {
+
+		this.save(new BlogPost("title first", "author first", "content first", new ArrayList<>(List.of("once"))));
+
+
+		//tags: post = on every post
+		//		odd/even = on every other post
+		List<String> oddTags = new ArrayList<>(List.of("odd", "post"));
+		List<String> evenTags = new ArrayList<>(List.of("even", "post"));
+		for (int i = 0; i < 20; i ++) {
+			BlogPost post;
+			if (i % 2 == 0)
+				post = new BlogPost("title " + i, "author " + i, "content " + i, evenTags);
+			else
+				post = new BlogPost("title " + i, "author " + i, "content " + i, oddTags);
+			this.save(post);
+		}
+
+
+		//get most popular tags
+		MvcResult res =  mockMvc.perform(get("/populartags")
+						.contentType(MediaType.APPLICATION_JSON))
+						.andExpect(status().isOk()).andReturn();  // Expect HTTP NOT FOUND status
+
+
+		JsonNode jsonString = objectMapper.readTree(res.getResponse().getContentAsString());
+		TagCount[] tagCounts =  objectMapper.readValue(jsonString.toString(), TagCount[].class);
+
+
+		Assertions.assertThat(tagCounts.length).isEqualTo(4);
+		//most popular tag is "post" with 20 mentions
+		Assertions.assertThat(tagCounts[0].getTag()).isEqualTo("post");
+		Assertions.assertThat(tagCounts[0].getCount()).isEqualTo(20);
+
+		//next two can come in any order
+		if (tagCounts[1].getTag().equals("odd")) {
+			Assertions.assertThat(tagCounts[2].getTag()).isEqualTo("even");
+		} else if (tagCounts[1].getTag().equals("even")) {
+			Assertions.assertThat(tagCounts[2].getTag()).isEqualTo("odd");
+		} else {
+			Assertions.fail("The second and third most popular tags are not even and odd");
+		}
+		//check the counts
+		Assertions.assertThat(tagCounts[1].getCount()).isEqualTo(10);
+		Assertions.assertThat(tagCounts[2].getCount()).isEqualTo(10);
+
+		//check that once appears once in last
+		Assertions.assertThat(tagCounts[3].getTag()).isEqualTo("once");
+		Assertions.assertThat(tagCounts[3].getCount()).isEqualTo(1);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.haprer.blogger.controllers;
 
+import com.haprer.blogger.TagCount;
 import com.haprer.blogger.services.BlogService;
 import com.haprer.blogger.data.BlogPost;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -61,6 +63,12 @@ public class BlogController {
 
         Pageable pageable = PageRequest.of(page, size);
         return blogService.findAll(pageable);
+    }
+
+
+    @GetMapping("/populartags")
+    public List<TagCount> getPopularTags(){
+        return blogService.findMostPopularTags();
     }
 
 
